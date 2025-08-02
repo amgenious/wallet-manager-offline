@@ -1,10 +1,9 @@
 import { Ionicons } from "@expo/vector-icons"
-import { useRouter } from 'expo-router'
-import { useSQLiteContext } from 'expo-sqlite'
 import { useState } from 'react'
 import { ActivityIndicator, Alert, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { styles } from '../../assets/styles/create.styles.js'
 import { COLORS } from '../../contants/colors.js'
+import { useTransactions } from "../../hooks/useTransactions.js"
 
 
 const CATEGORIES = [
@@ -17,14 +16,13 @@ const CATEGORIES = [
 ]
 
 
-const Create = () => {
-    const db = useSQLiteContext()
-    const router = useRouter()
+const Create = ({handleCloseModal, setModalVisible}) => {
     const[title,setTitle] = useState("")
     const[amount,setAmount] = useState("")
     const[selectedCategory,setSelectedCategory] = useState("")
     const[isExpense,setIsExpense] = useState(true)
     const[isLoading,setIsLoading] = useState(false)
+    const {createTransaction,} = useTransactions()
 
     const handleCreate = async()=>{
      
@@ -38,12 +36,9 @@ const Create = () => {
         setIsLoading(true)
             try{
             const formatedAmount = isExpense ? -Math.abs(parseFloat(amount)) : Math.abs(parseFloat(amount))
-            const response = await db.runAsync(`
-            INSERT INTO transactions(title,amount,category)
-            VALUES (? ,? , ?)`,[title,formatedAmount,selectedCategory])
-         
-            Alert.alert("Success", "Transaction created successfully")
-            router.back()
+            createTransaction(title,formatedAmount,selectedCategory)
+            handleCloseModal()
+          
         }catch(err){
             console.log(err)
             Alert.alert("Error", err.message || "Failed to create transaction")
@@ -54,7 +49,7 @@ const Create = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={()=> router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={()=> setModalVisible(false)}>
             <Ionicons name='arrow-back' size={24} color={COLORS.primary}/>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>

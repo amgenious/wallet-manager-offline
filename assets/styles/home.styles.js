@@ -36,6 +36,11 @@ export const styles = StyleSheet.create({
     color: COLORS.textLight,
     marginBottom: 2,
   },
+  welcomeText2: {
+    fontSize: 16,
+    color: COLORS.textLight,
+    fontWeight:"bold"
+  },
   usernameText: {
     fontSize: 16,
     fontWeight: "600",

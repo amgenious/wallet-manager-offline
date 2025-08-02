@@ -15,7 +15,6 @@ const CATEGORY_ICONS = {
 }
 
 const TransactionItem = ({item, onDelete}) => {
-  console.log(item)
     const isIncome = parseFloat(item.amount) > 0;
     const iconName = CATEGORY_ICONS[item.category] || "pricetag-outline"
   return (
@@ -37,7 +36,7 @@ const TransactionItem = ({item, onDelete}) => {
             <Text style={styles.transactionDate}>{formatDate(item.created_at)}</Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={()=>onDelete(item.title)}>
+      <TouchableOpacity style={styles.deleteButton} onPress={()=>onDelete(item.id)}>
         <Ionicons name="trash-outline" size={20} color={COLORS.expense} />
       </TouchableOpacity>
     </View>

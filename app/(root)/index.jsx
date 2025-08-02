@@ -1,19 +1,23 @@
-import { styles } from "@/assets/styles/home.styles.js"
-import { SignOutButton } from '@/components/SignOutButton'
-import { Ionicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
+import { Ionicons } from "@expo/vector-icons"
+import { router } from "expo-router"
 import { useEffect, useState } from 'react'
-import { Alert, FlatList, Image, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Image, Modal, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
+import { styles } from '../../assets/styles/home.styles'
 import BalanceCard from "../../components/BalanceCard"
-import NoTransactionsFound from '../../components/NoTransactionsFound'
+import NoTransactionsFound from "../../components/NoTransactionsFound"
 import PageLoaderPage from '../../components/PageLoader'
-import TransactionItem from '../../components/TransactionItem'
+import ProfileCard from "../../components/ProfileCard"
+import TransactionItem from "../../components/TransactionItem"
+import { COLORS } from "../../contants/colors"
 import { useTransactions } from "../../hooks/useTransactions"
+import Create from "./create"
+
 
 
 export default function Page() {
-const {transactions,summary,isLoading,deleteTransaction,loadData}=useTransactions()
+const {transactions,summary,isLoading,deleteTransaction,loadData,profile}=useTransactions()
   const [refreshing, setRefreshing] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
   const onRefresh = async() => {
     setRefreshing(true)
     await loadData()
@@ -22,6 +26,10 @@ const {transactions,summary,isLoading,deleteTransaction,loadData}=useTransaction
   useEffect(()=>{
     loadData()
   },[])
+  const handleCloseModal = () => {
+    setModalVisible(false)
+    loadData()
+  }
   const handleDelete = (id)=>{
     Alert.alert("Delete Transaction", "Are you sure you want to delete this transaction",[
       {text:"Cancel", style:"cancel"},
@@ -29,8 +37,12 @@ const {transactions,summary,isLoading,deleteTransaction,loadData}=useTransaction
     ])
   }
 if(isLoading && !refreshing) return <PageLoaderPage />
+if (profile.length == 0){
+  return <ProfileCard />
+} else {
   return (
-    <View style={styles.container}>
+    <View style={styles.container}
+    >
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
@@ -39,18 +51,21 @@ if(isLoading && !refreshing) return <PageLoaderPage />
             style={styles.headerLogo}
             />
             <View style={styles.welcomeContainer}>
-              <Text style={styles.welcomeText}>Welcome</Text>
+              <Text style={styles.welcomeText}>Welcome,</Text>
+              <Text style={styles.welcomeText2}>{profile[0].name}</Text>
             </View>
           </View>
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.addButton} onPress={()=>router.push("/create")}>
-              <Ionicons name='add' size={20} color={"#fff"}/>
+            <TouchableOpacity style={styles.addButton} onPress={() => {setModalVisible(true)}}>
+              <Ionicons name='add-circle' size={20} color={"#fff"}/>
               <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
-            <SignOutButton />
+            <TouchableOpacity onPress={() => router.navigate('/settings')}>
+              <Ionicons name='settings' size={20} color={COLORS.primary}/>
+            </TouchableOpacity>
           </View>
         </View>
-      <BalanceCard summary={summary} />
+      <BalanceCard summary={summary} currency={profile[0].currency}/>
       <View style={styles.transactionsHeaderContainer}>
         <Text style={styles.sectionTitle}>Recent Transactions</Text>
       </View>
@@ -59,16 +74,24 @@ if(isLoading && !refreshing) return <PageLoaderPage />
       style={styles.transactionsList}
       contentContainerStyle={styles.transactionsListContent}
       data={transactions}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       renderItem={({item})=>(
         <TransactionItem item={item} onDelete={handleDelete} />
       )}
-      ListEmptyComponent={<NoTransactionsFound />}
+      ListEmptyComponent={<NoTransactionsFound setModalVisible={setModalVisible}/>}
       showsVerticalScrollIndicator={false}
-      refreshControl={<RefreshControl 
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-      />}
       />
+      <Modal
+      animationType="slide"
+      visible={modalVisible}
+        onRequestClose={() => {
+            setModalVisible(false);
+          }}
+      >
+        <Create handleCloseModal={handleCloseModal} setModalVisible={setModalVisible}/>
+      </Modal>
     </View>
+   
   )
+}
 }

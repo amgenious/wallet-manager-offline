@@ -6,6 +6,7 @@ import { Alert } from "react-native"
 export const useTransactions = () =>{
     const db = useSQLiteContext()
     const [transactions, setTransactions] = useState([])
+    const [profile, setProfile] = useState([])
     const [summary,setSummary] = useState({
         balance:0,income:0,expenses:0
     })
@@ -44,7 +45,7 @@ export const useTransactions = () =>{
         async()=>{
             setLoading(true)
             try{
-                await Promise.all([fetchTransactions(),fetchSummary()])
+                await Promise.all([fetchTransactions(),fetchSummary(),getProfiles()])
             }catch(error){
                 console.log(error)
             }finally{
@@ -53,19 +54,39 @@ export const useTransactions = () =>{
         },[fetchTransactions,fetchSummary]
     )
 
-    const deleteTransaction = async(title)=>{
+    const deleteTransaction = async(id)=>{
         try{
-           const response = await db.runAsync(
-            `DELETE FROM transactions WHERE title = ?`,
-            [title]
-        );            
-            loadData()
-            Alert.alert("Success","Transaction deleted Successfully")    
+           await db.runAsync(
+            `DELETE FROM transactions WHERE id = ?`,
+            [id]);   
+
+            loadData() 
         }catch(error){  
             console.log(error)
             Alert.alert("Error", error.messge)
         }
     }
-
-    return {transactions,summary,isLoading,loadData,deleteTransaction}
+const createTransaction = async(title,formatedAmount,selectedCategory) => {
+    try{
+      await db.runAsync(`
+            INSERT INTO transactions(title,amount,category)
+            VALUES (? ,? , ?)`,[title,formatedAmount,selectedCategory]);
+    }catch(e){
+        console.log(e)
+    }
+}
+const createProfile = async(name,currency)=> {
+    try{
+        await db.runAsync(`INSERT INTO profiles(name,currency) VALUES (?,?)`,[name,currency])
+    }catch(e){
+        console.log(e)
+    }
+}
+const getProfiles = useCallback(
+    async()=>{
+       const results = await db.getAllAsync(`SELECT * FROM profiles`);
+        const data = results
+        setProfile(data)  
+    },[])
+    return {transactions,summary,isLoading,loadData,deleteTransaction,createTransaction,createProfile,getProfiles,profile}
 } 

@@ -50,13 +50,26 @@ const oceanTheme = {
   card: "#FFFFFF",
   shadow: "#000000",
 };
+const darkTheme = {
+  primary: "#2ECC71",        // Keep your green for highlights (from income)
+  background: "#121212",     // Standard dark mode background
+  text: "#FFFFFF",           // Main text color (white)
+  border: "#2A2A2A",         // Subtle dark gray border
+  white: "#FFFFFF",          // Pure white
+  textLight: "#BBBBBB",      // Light gray for secondary text
+  expense: "#E74C3C",        // Keep your red (from original theme)
+  income: "#2ECC71",         // Keep your green
+  card: "#1E1E1E",           // Slightly lighter than background
+  shadow: "#000000",         // Retain for depth/shadow
+};
 
 export const THEMES = {
   coffee: coffeeTheme,
   forest: forestTheme,
   purple: purpleTheme,
   ocean: oceanTheme,
+  dark:darkTheme
 };
 
 // 👇 change this to switch theme
-export const COLORS = THEMES.forest;
+export const COLORS = THEMES.dark;

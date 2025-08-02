@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
     marginBottom: 20,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.background,
   },
   inputIcon: {
     marginHorizontal: 12,
@@ -138,7 +138,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.background,
   },
   categoryButtonActive: {
     backgroundColor: COLORS.primary,
