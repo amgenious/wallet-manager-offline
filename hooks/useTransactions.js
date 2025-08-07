@@ -82,11 +82,34 @@ const createProfile = async(name,currency)=> {
         console.log(e)
     }
 }
+const updateProfile = async (updatedName, updatedCurrency, p_id) => {
+  const id = parseInt(p_id, 10);
+  try {
+    await db.runAsync(
+      `UPDATE profiles SET name = ?, currency = ? WHERE id = ?`,
+      [updatedName, updatedCurrency, id]
+    );
+  } catch (e) {
+    console.log("Error updating profile:", e);
+  }
+};
+
 const getProfiles = useCallback(
     async()=>{
        const results = await db.getAllAsync(`SELECT * FROM profiles`);
         const data = results
         setProfile(data)  
-    },[])
-    return {transactions,summary,isLoading,loadData,deleteTransaction,createTransaction,createProfile,getProfiles,profile}
+    },[]
+)
+ const deleteProfile = async(id)=>{
+        try{
+           await db.runAsync(
+            `DELETE FROM profiles WHERE id = ?`,
+            [id]);    
+        }catch(error){  
+            console.log(error)
+            Alert.alert("Error", error.messge)
+        }
+    }    
+return {transactions,summary,isLoading,loadData,deleteTransaction,createTransaction,createProfile,getProfiles,profile,updateProfile,deleteProfile}
 } 

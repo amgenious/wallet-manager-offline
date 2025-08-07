@@ -1,13 +1,14 @@
 import { styles } from "@/assets/styles/home.styles.js";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ButtonMultiselect, { ButtonLayout, } from 'react-native-button-multiselect';
 import { COLORS } from "../contants/colors";
 import { useTransactions } from "../hooks/useTransactions";
 
-const ProfileCard = () => {
-const {createProfile,loadData } = useTransactions()
+const ProfileCard = ({setIsComing}) => {
+const {createProfile } = useTransactions()
 const CURRENCIES = [
       { label: "Dollar", value: "$" },
       { label: "Euro (EUR)", value: "€" },
@@ -31,7 +32,7 @@ const[isLoading,setIsLoading] = useState(false)
     setIsLoading(true)
     try{
         createProfile(name,selectedButtons)
-        loadData()
+       router.push('/')
     }catch(e){
         console.log(e)
     }finally{

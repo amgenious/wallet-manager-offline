@@ -18,14 +18,17 @@ export default function Page() {
 const {transactions,summary,isLoading,deleteTransaction,loadData,profile}=useTransactions()
   const [refreshing, setRefreshing] = useState(false)
   const [modalVisible, setModalVisible] = useState(false);
+  const [isComing, setIsComing] = useState(true)
   const onRefresh = async() => {
     setRefreshing(true)
     await loadData()
     setRefreshing(false)
+    setIsComing(false)
   }
   useEffect(()=>{
-    loadData()
+    onRefresh()
   },[])
+
   const handleCloseModal = () => {
     setModalVisible(false)
     loadData()
@@ -36,7 +39,7 @@ const {transactions,summary,isLoading,deleteTransaction,loadData,profile}=useTra
       {text:"Delete",style:"destructive",onPress:()=> deleteTransaction(id)}
     ])
   }
-if(isLoading && !refreshing) return <PageLoaderPage />
+if(isComing && !refreshing) return <PageLoaderPage setIsComing={setIsComing}/>
 if (profile.length == 0){
   return <ProfileCard />
 } else {
@@ -60,7 +63,7 @@ if (profile.length == 0){
               <Ionicons name='add-circle' size={20} color={"#fff"}/>
               <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.navigate('/settings')}>
+            <TouchableOpacity onPress={() => router.navigate({ pathname: "/settings", params: { id: profile[0].id } })}>
               <Ionicons name='settings' size={20} color={COLORS.primary}/>
             </TouchableOpacity>
           </View>
