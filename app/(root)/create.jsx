@@ -16,7 +16,7 @@ const CATEGORIES = [
 ]
 
 
-const Create = ({handleCloseModal, setModalVisible}) => {
+const Create = ({handleCloseModal, setModalVisible,currency}) => {
     const[title,setTitle] = useState("")
     const[amount,setAmount] = useState("")
     const[selectedCategory,setSelectedCategory] = useState("")
@@ -93,7 +93,7 @@ const Create = ({handleCloseModal, setModalVisible}) => {
                 </TouchableOpacity>
             </View>
         <View style={styles.amountContainer}>
-            <Text style={styles.currencySymbol}>$</Text>
+            <Text style={styles.currencySymbol}>{currency}</Text>
             <TextInput 
             style={styles.amountInput} 
             placeholder='0.00'

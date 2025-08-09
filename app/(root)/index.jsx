@@ -91,7 +91,7 @@ if (profile.length == 0){
             setModalVisible(false);
           }}
       >
-        <Create handleCloseModal={handleCloseModal} setModalVisible={setModalVisible}/>
+        <Create handleCloseModal={handleCloseModal} setModalVisible={setModalVisible} currency={profile[0].currency}/>
       </Modal>
     </View>
    
