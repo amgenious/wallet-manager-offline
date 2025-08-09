@@ -39,7 +39,7 @@ const {transactions,summary,isLoading,deleteTransaction,loadData,profile}=useTra
       {text:"Delete",style:"destructive",onPress:()=> deleteTransaction(id)}
     ])
   }
-if(isComing && !refreshing) return <PageLoaderPage setIsComing={setIsComing}/>
+if(refreshing) return <PageLoaderPage setIsComing={setIsComing}/>
 if (profile.length == 0){
   return <ProfileCard />
 } else {
